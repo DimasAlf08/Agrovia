@@ -15,15 +15,15 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'phone',
-        'location',
-        'about_me',
+        'username', // Tambahan untuk Agrovia
+        'nama',     // Tambahan untuk Agrovia
+        'role',     // Tambahan untuk Agrovia
     ];
 
     /**
@@ -44,5 +44,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
+    // ==========================================
+    // FUNGSI TAMBAHAN AGROVIA
+    // ==========================================
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

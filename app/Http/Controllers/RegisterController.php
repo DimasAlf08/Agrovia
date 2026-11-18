@@ -14,21 +14,21 @@ class RegisterController extends Controller
         return view('session.register');
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $attributes = request()->validate([
-            'name' => ['required', 'max:50'],
-            'email' => ['required', 'email', 'max:50', Rule::unique('users', 'email')],
-            'password' => ['required', 'min:5', 'max:20'],
-            'agreement' => ['accepted']
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'username' => 'required|string|max:50|unique:users',
+            'password' => 'required|string|min:6|confirmed',
         ]);
-        $attributes['password'] = bcrypt($attributes['password'] );
 
-        
+        User::create([
+            'nama' => $request->nama,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role' => 'pengawas', // Default role untuk yang daftar baru
+        ]);
 
-        session()->flash('success', 'Your account has been created.');
-        $user = User::create($attributes);
-        Auth::login($user); 
-        return redirect('/dashboard');
+        return redirect('/login')->with('success', 'Registrasi berhasil, silakan login.');
     }
 }

@@ -13,29 +13,28 @@ class SessionsController extends Controller
         return view('session.login-session');
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $attributes = request()->validate([
-            'email'=>'required|email',
-            'password'=>'required' 
+        $request->validate([
+            'username' => 'required|string', // Ubah dari email
+            'password' => 'required|string',
         ]);
 
-        if(Auth::attempt($attributes))
-        {
-            session()->regenerate();
-            return redirect('dashboard')->with(['success'=>'You are logged in.']);
+        if (Auth::attempt($request->only('username', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
         }
-        else{
 
-            return back()->withErrors(['email'=>'Email or password invalid.']);
-        }
+        return back()->withErrors([
+            'username' => 'Username atau password salah.',
+        ])->onlyInput('username');
     }
-    
+
     public function destroy()
     {
 
         Auth::logout();
 
-        return redirect('/login')->with(['success'=>'You\'ve been logged out.']);
+        return redirect('/login')->with(['success' => 'You\'ve been logged out.']);
     }
 }

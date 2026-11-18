@@ -1,0 +1,525 @@
+/* public/css/custom-dark.css */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+/* ============================================================
+   AGROVIA DARK THEME — Neon Purple Accent
+   ============================================================ */
+
+/* CSS Variables untuk konsistensi */
+:root {
+    --neon-purple:       #b844f7;
+    --neon-purple-light: #d580ff;
+    --neon-purple-dark:  #8b2fd4;
+    --neon-glow:         rgba(184, 68, 247, 0.55);
+    --neon-glow-soft:    rgba(184, 68, 247, 0.25);
+    --bg-dark:           #0b0c16;
+    --bg-card:           rgba(18, 19, 35, 0.88);
+    --bg-sidebar:        #0e0f1b;
+    --text-primary:      #f8fafc;
+    --text-muted:        #94a3b8;
+    --border-subtle:     rgba(184, 68, 247, 0.22);
+}
+
+/* ── 0. FIX UTAMA: SIDEBAR & MAIN-CONTENT LAYOUT NON-OVERLAP ─ */
+#sidenav-main {
+    width: 260px !important;
+    max-width: 260px !important;
+    position: fixed !important;
+    top: 1rem !important;
+    bottom: 1rem !important;
+    left: 1rem !important;
+    z-index: 1030 !important;
+    margin: 0 !important;
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        margin-left: 285px !important;
+        padding-left: 0.5rem !important;
+        padding-right: 1.5rem !important;
+        transition: margin-left 0.3s ease !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    #sidenav-main {
+        transform: translateX(-300px);
+        transition: transform 0.3s ease !important;
+    }
+    .g-sidenav-pinned #sidenav-main {
+        transform: translateX(0) !important;
+    }
+    .main-content {
+        margin-left: 0 !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* ── 1. BACKGROUND VIDEO & TEMA UTAMA ────────────────────── */
+html {
+    background-color: var(--bg-dark);
+}
+
+.video-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.video-bg-media {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    filter: brightness(0.65) contrast(1.15) saturate(1.2);
+}
+
+.video-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse 65% 50% at 15% 10%, var(--neon-glow) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 40% at 85% 90%, var(--neon-glow-soft) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(11, 12, 22, 0.55) 0%, rgba(11, 12, 22, 0.78) 100%);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    transition: background 0.4s ease;
+}
+
+body,
+.main-content,
+.bg-gray-100 {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: var(--text-primary) !important;
+    font-family: "Poppins", "Open Sans", sans-serif !important;
+}
+
+/* ── 2. TEKS GLOBAL ─────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6, p, span, a, label,
+strong, small, td, th, li,
+.text-dark, .text-secondary,
+.breadcrumb-item a, .breadcrumb-item.active {
+    color: var(--text-primary) !important;
+}
+
+.breadcrumb-item a {
+    color: var(--text-muted) !important;
+}
+
+.text-muted, .opacity-6 {
+    color: var(--text-muted) !important;
+    opacity: 1 !important;
+}
+
+/* ── 3. SIDEBAR ─────────────────────────────────────────── */
+#sidenav-main {
+    background: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-subtle) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+#sidenav-main .sidenav-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.5rem;
+}
+
+/* Logo / nama brand di sidebar */
+#sidenav-main .navbar-brand span {
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+/* Nav links */
+#sidenav-main .nav-link {
+    color: var(--text-muted) !important;
+    border-radius: 10px !important;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s !important;
+    margin: 2px 8px !important;
+}
+
+#sidenav-main .nav-link:hover {
+    background: var(--neon-glow-soft) !important;
+    color: var(--neon-purple-light) !important;
+}
+
+#sidenav-main .nav-link.active {
+    background: linear-gradient(135deg, var(--neon-glow-soft), rgba(255,255,255,0.06)) !important;
+    color: #fff !important;
+    box-shadow: 0 0 12px var(--neon-glow-soft) !important;
+    border: 1px solid var(--border-subtle) !important;
+}
+
+/* Icon dalam nav */
+#sidenav-main .icon-shape {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+#sidenav-main .nav-link.active .icon-shape {
+    background: linear-gradient(135deg, var(--neon-purple-dark), var(--neon-purple)) !important;
+    box-shadow: 0 0 10px var(--neon-glow) !important;
+}
+
+/* Section label */
+#sidenav-main h6.text-uppercase {
+    color: var(--neon-purple-light) !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.08em !important;
+    opacity: 0.8 !important;
+}
+
+/* HR separator */
+#sidenav-main hr {
+    border-color: var(--border-subtle) !important;
+    opacity: 0.5 !important;
+}
+
+/* Footer sidebar (info user) */
+#sidenav-main .sidenav-footer .card {
+    background: linear-gradient(135deg, var(--neon-glow-soft), rgba(255,255,255,0.04)) !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 0 20px var(--neon-glow-soft) !important;
+}
+
+/* ── 4. CARDS (GLASSMORPHISM + NEON BORDER) ─────────────── */
+.card {
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4), 0 0 1px var(--border-subtle) !important;
+    transition: box-shadow 0.3s, transform 0.3s !important;
+}
+
+.card:hover {
+    box-shadow: 0 6px 40px rgba(0,0,0,0.5), 0 0 18px var(--neon-glow-soft) !important;
+    transform: translateY(-2px) !important;
+}
+
+.card-header,
+.card-body,
+.card-footer {
+    background: transparent !important;
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding-bottom: 0.75rem !important;
+}
+
+.card-header h6 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    color: #fff !important;
+    position: relative;
+}
+
+.card-header h6::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 36px;
+    height: 3px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-purple-light));
+    box-shadow: 0 0 8px var(--neon-glow);
+}
+
+/* ── 5. NAVBAR ATAS ─────────────────────────────────────── */
+.navbar-main {
+    background: rgba(15, 15, 26, 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3) !important;
+}
+
+.navbar-main .nav-link,
+.navbar-main .icon i,
+.navbar-main .nav-link span {
+    color: var(--text-primary) !important;
+}
+
+.navbar-main .input-group-text {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: var(--border-subtle) !important;
+    color: var(--text-muted) !important;
+}
+
+.navbar-main .form-control {
+    background: rgba(255,255,255,0.04) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+
+.navbar-main .form-control::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* ── 6. DROPDOWN ─────────────────────────────────────────── */
+.dropdown-menu {
+    background: #1a1a2e !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+}
+
+.dropdown-item {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+    background: var(--neon-glow-soft) !important;
+    color: var(--neon-purple-light) !important;
+}
+
+/* ── 7. TABEL ────────────────────────────────────────────── */
+.table thead th {
+    color: var(--neon-purple-light) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    font-size: 0.72rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.table tbody td {
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    color: var(--text-primary) !important;
+}
+
+.table tbody tr:hover td {
+    background: var(--neon-glow-soft) !important;
+}
+
+/* ── 8. FORM & INPUT ─────────────────────────────────────── */
+.form-control,
+.form-select {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 0.9rem !important;
+    transition: border-color 0.25s, box-shadow 0.25s !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.35) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--neon-purple) !important;
+    box-shadow: 0 0 0 3px var(--neon-glow-soft), 0 0 14px var(--neon-glow-soft) !important;
+    background: var(--neon-glow-soft) !important;
+    outline: none !important;
+}
+
+.form-select option {
+    background: #1a1a2e !important;
+    color: #fff !important;
+}
+
+/* Label Material Soft-UI */
+.input-group-outline .form-label {
+    color: var(--text-muted) !important;
+}
+
+.input-group-outline.is-focused .form-label,
+.input-group-outline.is-filled .form-label {
+    color: var(--neon-purple-light) !important;
+}
+
+.input-group-outline .form-control ~ .input-group-outline,
+.input-group-outline .form-control:focus ~ * {
+    border-color: var(--neon-purple) !important;
+}
+
+/* ── 9. TOMBOL SIMPAN — HIJAU GRADIENT + HOVER ───────────── */
+.btn-save-green,
+button[type="submit"].btn,
+input[type="submit"].btn,
+.btn.bg-gradient-primary {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
+    border-radius: 10px !important;
+    padding: 0.65rem 1.5rem !important;
+    box-shadow: 0 4px 15px rgba(34,197,94,0.35) !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+button[type="submit"].btn::before,
+input[type="submit"].btn::before,
+.btn.bg-gradient-primary::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s ease;
+}
+
+button[type="submit"].btn:hover::before,
+input[type="submit"].btn:hover::before,
+.btn.bg-gradient-primary:hover::before {
+    left: 100%;
+}
+
+button[type="submit"].btn:hover,
+input[type="submit"].btn:hover,
+.btn.bg-gradient-primary:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%) !important;
+    box-shadow: 0 6px 25px rgba(34,197,94,0.55), 0 0 0 3px rgba(34,197,94,0.2) !important;
+    transform: translateY(-2px) scale(1.01) !important;
+    color: #fff !important;
+}
+
+button[type="submit"].btn:active,
+input[type="submit"].btn:active,
+.btn.bg-gradient-primary:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 2px 10px rgba(34,197,94,0.3) !important;
+}
+
+/* Tombol Batal / Outline */
+.btn-outline-secondary {
+    color: var(--text-muted) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    background: transparent !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(255,255,255,0.07) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.3) !important;
+}
+
+/* Tombol Aksi di Tabel (Edit, Hapus) */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    transition: all 0.25s !important;
+}
+.btn-warning:hover {
+    box-shadow: 0 4px 14px rgba(245,158,11,0.5) !important;
+    transform: translateY(-1px) !important;
+    color: #fff !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    transition: all 0.25s !important;
+}
+.btn-danger:hover {
+    box-shadow: 0 4px 14px rgba(239,68,68,0.5) !important;
+    transform: translateY(-1px) !important;
+    color: #fff !important;
+}
+
+.btn-sm {
+    font-size: 0.75rem !important;
+    padding: 0.35rem 0.8rem !important;
+}
+
+/* Tombol Tambah Data / success */
+.btn-success, .btn.bg-gradient-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    transition: all 0.25s !important;
+}
+.btn-success:hover, .btn.bg-gradient-success:hover {
+    box-shadow: 0 4px 14px rgba(34,197,94,0.5) !important;
+    transform: translateY(-1px) !important;
+    color: #fff !important;
+}
+
+/* ── 10. ICON SHAPES (DASHBOARD CARDS) ───────────────────── */
+.icon-shape.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--neon-purple-dark) 0%, var(--neon-purple) 100%) !important;
+    box-shadow: 0 4px 14px var(--neon-glow) !important;
+}
+.icon-shape.bg-gradient-info {
+    background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%) !important;
+    box-shadow: 0 4px 14px rgba(14,165,233,0.4) !important;
+}
+.icon-shape.bg-gradient-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+    box-shadow: 0 4px 14px rgba(245,158,11,0.4) !important;
+}
+.icon-shape.bg-gradient-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%) !important;
+    box-shadow: 0 4px 14px rgba(239,68,68,0.4) !important;
+}
+
+/* ── 11. BADGE & STATUS ──────────────────────────────────── */
+.badge {
+    font-size: 0.72rem !important;
+    padding: 0.3em 0.65em !important;
+    border-radius: 6px !important;
+}
+
+/* ── 12. SCROLLBAR CUSTOM ────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb {
+    background: var(--neon-glow);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--neon-purple); }
+
+/* ── 13. ALERT / NOTIFIKASI ─────────────────────────────── */
+.alert-success, .bg-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 4px 16px rgba(34,197,94,0.4) !important;
+}
+
+/* ── 14. HR SEPARATOR GLOBAL ─────────────────────────────── */
+hr.horizontal {
+    border-color: var(--border-subtle) !important;
+    opacity: 0.6 !important;
+}
+
+/* ── 15. SEMBUNYIKAN FOOTER BAWAAN ──────────────────────── */
+footer.footer { display: none !important; }
+
+/* ── 16. ANIMASI NEON PULSE (OPSIONAL) ───────────────────── */
+@keyframes neon-pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--neon-glow); }
+    50%       { box-shadow: 0 0 20px var(--neon-glow), 0 0 40px var(--neon-glow-soft); }
+}
+
+.nav-link.active .icon-shape {
+    animation: neon-pulse 2.5s ease-in-out infinite;
+}
+
