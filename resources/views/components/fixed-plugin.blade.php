@@ -1,5 +1,5 @@
 <div class="fixed-plugin">
-  <a class="fixed-plugin-button text-white position-fixed px-3 py-2" title="Pengaturan Tampilan">
+  <a class="fixed-plugin-button text-white position-fixed px-3 py-2" id="agrovia-plugin-toggle" title="Pengaturan Tampilan" onclick="toggleAgroviaConfigurator(event)">
     <i class="fa fa-cog py-2"> </i>
   </a>
   <div class="card shadow-lg fixed-plugin-card">
@@ -17,7 +17,7 @@
           </h5>
           <p class="text-xs text-muted mb-2">Pilih warna tema & aksen dashboard</p>
         </div>
-        <button class="btn btn-link text-white p-0 fixed-plugin-close-button" style="font-size: 1.1rem; opacity: 0.7;">
+        <button type="button" class="btn btn-link text-white p-0 fixed-plugin-close-button" onclick="closeAgroviaConfigurator(event)" style="font-size: 1.1rem; opacity: 0.7;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/>
             <line x1="6" y1="6" x2="18" y2="18"/>
@@ -88,7 +88,24 @@
 
       <hr class="horizontal dark my-3" style="border-color: rgba(255, 255, 255, 0.1) !important;">
 
-      {{-- Section 3: Reset --}}
+      {{-- Section 3: Efek Suara Interaktif (UI Sound Effects) --}}
+      <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div>
+            <label class="text-xs font-weight-bold text-uppercase d-block mb-0" style="color: var(--neon-purple-light); letter-spacing: 0.06em;">
+              🔊 Suara Hover & Klik
+            </label>
+            <span class="text-xxs text-muted" id="agroviaSoundStatusLabel" style="font-size: 0.68rem;">Efek audio taktil aktif</span>
+          </div>
+          <div class="form-check form-switch ps-0 mb-0">
+            <input class="form-check-input ms-auto" type="checkbox" id="agroviaSoundSwitch" checked onchange="toggleAgroviaSound(this)" style="cursor: pointer;">
+          </div>
+        </div>
+      </div>
+
+      <hr class="horizontal dark my-3" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+
+      {{-- Section 4: Reset --}}
       <div>
         <button type="button" class="btn btn-outline-secondary w-100 py-2 text-xs fw-bold" onclick="resetAgroviaTheme()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
@@ -105,32 +122,59 @@
 
 <style>
 /* ── CONFIGURATOR DRAWER STYLES ── */
-.fixed-plugin .fixed-plugin-button {
-  background: rgba(18, 19, 35, 0.85) !important;
-  border: 1px solid var(--border-subtle) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 18px var(--neon-glow-soft) !important;
-  border-radius: 50% !important;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-  transition: all 0.3s ease;
+.fixed-plugin {
+  position: fixed !important;
+  z-index: 99990 !important;
 }
+
+.fixed-plugin .fixed-plugin-button {
+  background: rgba(18, 19, 35, 0.88) !important;
+  border: 1.5px solid var(--neon-purple, #b844f7) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 20px var(--neon-glow, rgba(184, 68, 247, 0.5)) !important;
+  border-radius: 50% !important;
+  width: 48px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  bottom: 25px !important;
+  right: 25px !important;
+  position: fixed !important;
+  z-index: 99995 !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.fixed-plugin .fixed-plugin-button i {
+  pointer-events: none !important;
+  font-size: 1.15rem !important;
+}
+
 .fixed-plugin .fixed-plugin-button:hover {
-  transform: rotate(45deg) scale(1.1);
-  box-shadow: 0 0 20px var(--neon-glow) !important;
+  transform: rotate(60deg) scale(1.12) !important;
+  box-shadow: 0 0 25px var(--neon-purple, #b844f7) !important;
 }
 
 .fixed-plugin-card {
-  background: rgba(14, 15, 28, 0.96) !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: -380px !important;
+  bottom: 0 !important;
+  height: 100vh !important;
+  width: 320px !important;
+  background: rgba(14, 15, 28, 0.97) !important;
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
-  border-left: 1px solid var(--border-subtle) !important;
+  border-left: 1px solid var(--border-subtle, rgba(184, 68, 247, 0.3)) !important;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8) !important;
   color: #fff !important;
-  width: 320px !important;
+  z-index: 99999 !important;
+  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.fixed-plugin.show .fixed-plugin-card {
+  right: 0 !important;
 }
 
 .theme-color-grid {
@@ -160,8 +204,8 @@
 
 .theme-color-btn.active {
   background: rgba(255, 255, 255, 0.12);
-  border-color: var(--neon-purple) !important;
-  box-shadow: 0 0 15px var(--neon-glow-soft);
+  border-color: var(--neon-purple, #b844f7) !important;
+  box-shadow: 0 0 15px var(--neon-glow-soft, rgba(184, 68, 247, 0.3));
 }
 
 .color-swatch-circle {
@@ -189,49 +233,53 @@
 }
 
 .btn-dim.active, .btn-dim:hover {
-  background: var(--neon-purple) !important;
+  background: var(--neon-purple, #b844f7) !important;
   color: #fff !important;
-  box-shadow: 0 0 10px var(--neon-glow-soft);
+  box-shadow: 0 0 10px var(--neon-glow-soft, rgba(184, 68, 247, 0.3));
 }
 </style>
 
 <script>
-// Pastikan fungsi window.setAgroviaTheme selalu tersedia
-if (typeof window.setAgroviaTheme !== 'function') {
-  window.setAgroviaTheme = function(themeKey, btnEl) {
-    if (window.parent && typeof window.parent.setAgroviaTheme === 'function') {
-      window.parent.setAgroviaTheme(themeKey, btnEl);
-    }
-  };
-}
+// Fungsi eksplisit untuk membuka dan menutup konfigurator
+window.toggleAgroviaConfigurator = function(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const fp = document.querySelector('.fixed-plugin');
+  if (fp) {
+    fp.classList.toggle('show');
+  }
+};
 
-// Inisialisasi event tombol drawer & sinkronisasi UI saat DOM siap
+window.closeAgroviaConfigurator = function(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const fp = document.querySelector('.fixed-plugin');
+  if (fp) {
+    fp.classList.remove('show');
+  }
+};
+
+// Inisialisasi event & sinkronisasi UI saat DOM siap
 document.addEventListener('DOMContentLoaded', function() {
   const fp = document.querySelector('.fixed-plugin');
-  const btn = document.querySelector('.fixed-plugin-button');
-  const closeBtn = document.querySelector('.fixed-plugin-close-button');
+  const btn = document.getElementById('agrovia-plugin-toggle');
 
-  if (btn && fp) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      fp.classList.toggle('show');
-    });
-  }
-
-  if (closeBtn && fp) {
-    closeBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      fp.classList.remove('show');
-    });
+  // Bersihkan handler onclick lama dari template bawaan agar tidak saling menimpa
+  if (btn) {
+    btn.onclick = window.toggleAgroviaConfigurator;
   }
 
   // Klik di luar panel menutup drawer
-  document.addEventListener('click', function(e) {
-    if (fp && fp.classList.contains('show')) {
-      if (!fp.contains(e.target)) {
-        fp.classList.remove('show');
-      }
+  window.addEventListener('click', function(e) {
+    if (!fp || !fp.classList.contains('show')) return;
+    if (e.target.closest('.fixed-plugin-card') || e.target.closest('#agrovia-plugin-toggle')) {
+      return;
     }
+    fp.classList.remove('show');
   });
 
   // Sinkronkan tombol tema aktif
@@ -249,9 +297,29 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.btn-dim').forEach(b => b.classList.remove('active'));
     dimBtn.classList.add('active');
   }
-  const media = document.querySelector('.video-bg-media');
-  if (media) {
-    media.style.filter = `brightness(${currentDim}) contrast(1.15) saturate(1.2)`;
+  // Sinkronkan toggle suara UI
+  const soundSwitch = document.getElementById('agroviaSoundSwitch');
+  const soundLabel = document.getElementById('agroviaSoundStatusLabel');
+  const isSoundActive = localStorage.getItem('agrovia_sound_enabled') !== 'false';
+  if (soundSwitch) {
+    soundSwitch.checked = isSoundActive;
+    if (soundLabel) {
+      soundLabel.textContent = isSoundActive ? 'Efek audio taktil aktif' : 'Efek audio dinonaktifkan';
+    }
   }
 });
+
+// Fungsi handler toggle suara
+window.toggleAgroviaSound = function(checkbox) {
+  if (window.AgroviaSound) {
+    window.AgroviaSound.setEnabled(checkbox.checked);
+    const soundLabel = document.getElementById('agroviaSoundStatusLabel');
+    if (soundLabel) {
+      soundLabel.textContent = checkbox.checked ? 'Efek audio taktil aktif' : 'Efek audio dinonaktifkan';
+    }
+    if (checkbox.checked) {
+      window.AgroviaSound.click();
+    }
+  }
+};
 </script>

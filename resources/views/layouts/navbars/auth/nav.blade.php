@@ -25,12 +25,12 @@
 
             {{-- Search --}}
             <div class="ms-md-3 pe-md-3 d-flex align-items-center">
-                <div class="navbar-search-wrap">
+                <div class="navbar-search-wrap" title="Ketik untuk filter tabel atau tekan Enter untuk navigasi">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-purple)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="navbar-search-icon">
                         <circle cx="11" cy="11" r="8"/>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
-                    <input type="text" class="navbar-search-input" placeholder="Cari data...">
+                    <input type="text" id="navbarGlobalSearch" class="navbar-search-input" placeholder="Cari data (Lahan, Pekerja, Panen)...">
                 </div>
             </div>
 
@@ -214,3 +214,45 @@
   color: #fff !important;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('navbarGlobalSearch');
+  if (!searchInput) return;
+
+  // 1. Live Filter jika sedang berada di halaman tabel
+  searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.agr-table tbody tr, table tbody tr');
+    
+    if (rows.length > 0) {
+      rows.forEach(function(row) {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+  });
+
+  // 2. Navigasi cepat via Enter (Smart Jump)
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const q = this.value.toLowerCase().trim();
+      if (!q) return;
+
+      if (q.includes('lahan') || q.includes('blok')) {
+        window.location.href = "{{ route('lahan.index') }}";
+      } else if (q.includes('pekerja') || q.includes('mandor') || q.includes('karyawan')) {
+        window.location.href = "{{ route('pekerja.index') }}";
+      } else if (q.includes('panen') || q.includes('hasil') || q.includes('tbs')) {
+        window.location.href = "{{ route('panen.index') }}";
+      } else if (q.includes('kegiatan') || q.includes('rawat') || q.includes('pupuk')) {
+        window.location.href = "{{ route('kegiatan.index') }}";
+      } else if (q.includes('lapor') || q.includes('rekap') || q.includes('grafik')) {
+        window.location.href = "{{ route('laporan.index') }}";
+      } else if (q.includes('dash') || q.includes('home') || q.includes('beranda')) {
+        window.location.href = "{{ route('dashboard') }}";
+      }
+    }
+  });
+});
+</script>

@@ -84,7 +84,7 @@
                 <a href="{{ route('panen.edit', $p) }}" class="agr-btn-edit" title="Edit">
                   <i class="fas fa-pen"></i>
                 </a>
-                <form action="{{ route('panen.destroy', $p) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
+                <form action="{{ route('panen.destroy', $p) }}" method="POST" class="d-inline form-delete">
                   @csrf @method('DELETE')
                   <button class="agr-btn-delete" title="Hapus">
                     <i class="fas fa-trash"></i>

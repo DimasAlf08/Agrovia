@@ -1,200 +1,773 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Agrovia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Masuk - Agrovia</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --bg-color: #030303;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(13, 17, 23, 0.85);
+            --card-border: rgba(34, 197, 94, 0.4);
+            --card-shadow: 0 0 35px rgba(34, 197, 94, 0.22), inset 0 0 15px rgba(34, 197, 94, 0.08);
+            --input-bg: rgba(22, 27, 34, 0.8);
+            --input-border: #27272a;
+            --input-text: #ffffff;
+            --brand-green: #22c55e;
+            --brand-dark-green: #15803d;
+        }
+
+        body.light-theme {
+            --bg-color: #f7faf7;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --card-border: rgba(22, 163, 74, 0.2);
+            --card-shadow: 0 20px 45px -12px rgba(16, 24, 40, 0.08), 0 0 1px 1px rgba(0, 0, 0, 0.04);
+            --input-bg: #ffffff;
+            --input-border: #e2e8f0;
+            --input-text: #0f172a;
+        }
+
         body {
-            background-color: #030303;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            align-items: center;
+            justify-content: center;
             position: relative;
+            overflow-x: hidden;
+            padding: 24px 16px;
+            transition: background-color 0.3s ease;
         }
 
-        /* --- ANIMASI LINGKARAN GLOWING (NEON) --- */
+        /* --- THEME TOGGLE BUTTON --- */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        body.light-theme .theme-toggle-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.04);
+            border-color: var(--brand-green);
+        }
+
+        /* --- ANIMASI GLOWING ORBS --- */
         .orb {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
+            filter: blur(110px);
             z-index: 0;
-            animation: float 8s infinite alternate ease-in-out;
+            pointer-events: none;
+            animation: floatOrb 8s infinite alternate ease-in-out;
         }
-        .orb-purple {
-            width: 400px;
-            height: 400px;
-            background: rgba(138, 43, 226, 0.4); /* Ungu */
-            top: 10%;
-            right: 15%;
-        }
+
         .orb-green {
-            width: 300px;
-            height: 300px;
-            background: rgba(34, 197, 94, 0.2); /* Hijau */
-            bottom: 10%;
-            left: 10%;
+            width: 420px;
+            height: 420px;
+            background: rgba(34, 197, 94, 0.22);
+            top: 8%;
+            left: 8%;
+        }
+
+        body.light-theme .orb-green {
+            background: rgba(167, 243, 208, 0.65);
+        }
+
+        .orb-purple {
+            width: 450px;
+            height: 450px;
+            background: rgba(147, 51, 234, 0.18);
+            bottom: 8%;
+            right: 10%;
             animation-delay: -4s;
         }
-        @keyframes float {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-30px) scale(1.1); }
+
+        body.light-theme .orb-purple {
+            background: rgba(254, 240, 138, 0.55);
         }
 
-        /* --- ANIMASI GAMBAR SAWIT --- */
+        @keyframes floatOrb {
+            0% {
+                transform: translateY(0px) scale(1);
+            }
+
+            100% {
+                transform: translateY(-30px) scale(1.08);
+            }
+        }
+
+        /* --- ANIMASI GAMBAR KELAPA SAWIT --- */
         .palm-tree-bg {
-            position: absolute;
+            position: fixed;
             bottom: -30px;
             left: -30px;
-            width: 550px; /* Ukuran gambar */
+            width: 520px;
             height: auto;
-            opacity: 0.25; /* Transparansi gambar */
+            opacity: 0.2;
             z-index: 0;
-            animation: sway 6s infinite alternate ease-in-out;
-            transform-origin: bottom center;
-            
-            /* Trik agar gambar menyatu dengan dark mode */
-            mix-blend-mode: luminosity; 
+            animation: swayTree 7s infinite alternate ease-in-out;
+            transform-origin: bottom left;
+            pointer-events: none;
+            mix-blend-mode: luminosity;
             filter: contrast(120%) brightness(100%);
-            pointer-events: none; /* Agar tidak bisa diklik */
-        }
-        @keyframes sway {
-            0% { transform: rotate(-3deg); }
-            100% { transform: rotate(3deg); }
         }
 
-        /* --- LAYOUT --- */
+        body.light-theme .palm-tree-bg {
+            opacity: 0.12;
+            mix-blend-mode: multiply;
+        }
+
+        @keyframes swayTree {
+            0% {
+                transform: rotate(-2deg);
+            }
+
+            100% {
+                transform: rotate(2.5deg);
+            }
+        }
+
+        /* --- MAIN CONTAINER --- */
         .container {
             display: flex;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: auto;
             z-index: 1;
-            padding: 20px;
             align-items: center;
             justify-content: space-between;
+            gap: 40px;
         }
 
-        .left-side { flex: 1; padding-right: 50px; z-index: 1;}
-        .left-side h1 { font-size: 4.5rem; font-weight: 700; margin-bottom: 15px; letter-spacing: -2px; }
-        .left-side h1 span { color: #a855f7; } /* Warna ungu untuk "Agrovia" */
-        .left-side p { color: #a1a1aa; font-size: 1.1rem; line-height: 1.6; max-width: 450px; }
-
-        /* --- FORM BOX NEON --- */
-        .right-side { flex: 0 0 400px; }
-        .login-box {
-            background: rgba(10, 10, 10, 0.8);
-            border: 2px solid #a855f7; /* Border Ungu */
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 20px rgba(168, 85, 247, 0.2);
-            border-radius: 12px;
-            padding: 40px 30px;
-            backdrop-filter: blur(10px);
+        /* --- LEFT SIDE BRANDING --- */
+        .left-side {
+            flex: 1;
+            padding-right: 20px;
         }
-        .login-box h2 { text-align: center; font-size: 1.5rem; margin-bottom: 30px; font-weight: 600; }
 
-        .input-group { margin-bottom: 20px; }
-        .input-group input {
-            width: 100%;
-            background: transparent;
-            border: 1px solid #3f3f46;
-            padding: 12px 15px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.95rem;
-            transition: all 0.3s;
+        .left-side h1 {
+            font-size: 4.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+            line-height: 1.1;
         }
-        .input-group input:focus { outline: none; border-color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
-        .input-group input::placeholder { color: #71717a; }
 
-        .remember { display: flex; align-items: center; font-size: 0.8rem; color: #a1a1aa; margin-bottom: 20px; }
-        .remember input { margin-right: 8px; accent-color: #a855f7; }
+        .left-side h1 span {
+            color: var(--brand-green);
+            text-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+        }
 
-        .btn-login {
-            width: 100%;
-            background: linear-gradient(to right, #6b21a8, #a855f7);
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
+        .left-side p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 460px;
+        }
+
+        .feature-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 26px;
+        }
+
+        .feature-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 20px;
+            font-size: 0.82rem;
+            color: var(--brand-green);
             font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
         }
-        .btn-login:hover { background: linear-gradient(to right, #7e22ce, #c084fc); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
 
-        .bottom-text { text-align: center; margin-top: 20px; font-size: 0.8rem; color: #a1a1aa; }
-        .bottom-text a { color: #fff; text-decoration: none; transition: all 0.3s; }
-        .bottom-text a:hover { text-shadow: 0 0 10px currentColor; }
-        .social-login { display: flex; justify-content: center; gap: 15px; margin-top: 15px; }
-        .social-login img { width: 24px; cursor: pointer; transition: 0.3s; }
-        .social-login img:hover { transform: scale(1.1); }
-        
-        .error-msg { color: #f87171; font-size: 0.8rem; margin-bottom: 10px; text-align: center; }
+        /* --- RIGHT SIDE / LOGIN CARD --- */
+        .right-side {
+            flex: 0 0 430px;
+            max-width: 100%;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            border-radius: 26px;
+            padding: 38px 34px 34px 34px;
+            backdrop-filter: blur(14px);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* ================================================= */
+        /* --- ANIMASI LOGO AGROVIA (FLOATING & NEON RING) --- */
+        /* ================================================= */
+        .logo-wrapper {
+            position: relative;
+            width: 86px;
+            height: 86px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .logo-glow-ring {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.5) 0%, rgba(34, 197, 94, 0.15) 50%, transparent 72%);
+            animation: ringPulse 3.5s infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .logo-img {
+            position: relative;
+            z-index: 1;
+            width: 78px;
+            height: 78px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 14px rgba(34, 197, 94, 0.45));
+            animation: logoFloat 4.5s infinite ease-in-out;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+        }
+
+        .logo-wrapper:hover .logo-img {
+            transform: scale(1.12) rotate(-2deg);
+            filter: drop-shadow(0 0 24px rgba(34, 197, 94, 0.85));
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-7px) rotate(-1.5deg);
+            }
+        }
+
+        @keyframes ringPulse {
+
+            0%,
+            100% {
+                transform: scale(0.92);
+                opacity: 0.55;
+            }
+
+            50% {
+                transform: scale(1.22);
+                opacity: 0.95;
+            }
+        }
+
+        /* --- BRAND TITLE & SUB --- */
+        .brand-title {
+            font-size: 1.38rem;
+            font-weight: 800;
+            color: var(--brand-green);
+            letter-spacing: 2px;
+            margin: 0;
+            text-transform: uppercase;
+            line-height: 1.15;
+            text-shadow: 0 0 16px rgba(34, 197, 94, 0.3);
+        }
+
+        body.light-theme .brand-title {
+            color: #15803d;
+            text-shadow: none;
+        }
+
+        .brand-tagline {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 4px 0 20px 0;
+        }
+
+        .welcome-title {
+            font-size: 1.22rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 6px 0;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin: 0 0 22px 0;
+            line-height: 1.4;
+        }
+
+        /* --- NOTIFIKASI ERROR / SUCCESS --- */
+        .alert-box {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            margin-bottom: 18px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-theme .alert-box {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        body.light-theme .alert-success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+
+        /* --- FORM FIELDS (FLOATING LABEL & GREEN FOCUS) --- */
+        .field-group {
+            position: relative;
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .field-input {
+            width: 100%;
+            height: 50px;
+            padding: 0 16px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 0.92rem;
+            color: var(--input-text);
+            background: var(--input-bg);
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .field-label {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            color: #71717a;
+            pointer-events: none;
+            background: transparent;
+            padding: 0 4px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Floating label when focused or has content */
+        .field-input:focus,
+        .field-input:not(:placeholder-shown) {
+            border-color: var(--brand-green);
+        }
+
+        .field-input:focus {
+            box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+        }
+
+        .field-input:focus~.field-label,
+        .field-input:not(:placeholder-shown)~.field-label {
+            top: 0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--brand-green);
+            background: var(--card-bg);
+            border-radius: 4px;
+        }
+
+        body.light-theme .field-input:focus~.field-label,
+        body.light-theme .field-input:not(:placeholder-shown)~.field-label {
+            color: #166534;
+            background: #ffffff;
+        }
+
+        /* --- OPTIONS ROW (INGAT SAYA & LUPA SANDI) --- */
+        .options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 12px 0 22px 0;
+            font-size: 0.84rem;
+        }
+
+        .remember-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+        }
+
+        .remember-checkbox {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--brand-green);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--brand-green);
+            text-decoration: underline;
+        }
+
+        /* --- TOMBOL MASUK --- */
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.98rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.35);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #166534 0%, #4ade80 100%);
+            box-shadow: 0 0 28px rgba(34, 197, 94, 0.55);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* --- LINK BOTTOM DAFTAR / REGISTER --- */
+        .bottom-text {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .bottom-text a {
+            color: var(--brand-green);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .bottom-text a:hover {
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .left-side {
+                padding-right: 0;
+            }
+
+            .left-side h1 {
+                font-size: 3rem;
+            }
+
+            .left-side p {
+                margin: auto;
+            }
+
+            .feature-pills {
+                justify-content: center;
+            }
+
+            .right-side {
+                width: 100%;
+                max-width: 440px;
+            }
+        }
+
+        /* Animasi untuk Form Login */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            /* Terapkan animasi ke container utama */
+            animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- Ornamen Glowing -->
-    <div class="orb orb-purple"></div>
-    <div class="orb orb-green"></div>
+    <script>
+        // Cek jika user BELUM pernah nonton intro
+        if (!localStorage.getItem('agrovia_intro_played')) {
+            // Alihkan ke halaman intro
+            window.location.href = "{{ url('/intro') }}";
+        }
+    </script>
 
-    <!-- GAMBAR SAWIT PAKAI LINK (Ganti URL di bawah dengan link gambarmu) -->
+    <!-- Tombol Ganti Tema Cepat (Dark / Light) -->
+    <button class="theme-toggle-btn" id="themeToggle" type="button" title="Ganti Mode Gelap / Terang">
+        <span id="themeIcon">☀️</span>
+        <span id="themeLabel">Mode Terang</span>
+    </button>
+
+    <!-- Ornamen Glowing Neon -->
+    <div class="orb orb-green"></div>
+    <div class="orb orb-purple"></div>
+
+    <!-- Animasi Gambar Kelapa Sawit -->
     <img src="https://png.pngtree.com/png-clipart/20230105/original/pngtree-palm-fruit-on-transparent-background-png-image_8873069.png" class="palm-tree-bg" alt="Kelapa Sawit">
 
     <div class="container">
-        <!-- Kiri (Teks Agrovia) -->
+        <!-- Kiri: Branding Agrovia -->
         <div class="left-side">
             <h1>Welcome <br><span>Agrovia.</span></h1>
-            <p>Sistem Informasi Administrasi dan Operasional Perkebunan Kelapa Sawit. Kelola lahan, pekerja, dan hasil panen Anda dengan lebih efisien.</p>
+            <p>Sistem Informasi Administrasi dan Operasional Perkebunan Kelapa Sawit. Kelola blok lahan, pekerja, dan hasil panen Anda dengan lebih efisien.</p>
+
+            <div class="feature-pills">
+                <div class="feature-pill">🌱 Manajemen Blok Lahan</div>
+                <div class="feature-pill">📊 Rekapitulasi Panen TBS</div>
+                <div class="feature-pill">👥 Monitoring Mandor &amp; Pekerja</div>
+            </div>
         </div>
 
-        <!-- Kanan (Form) -->
+        <!-- Kanan: Form Login -->
         <div class="right-side">
-            <div class="login-box">
-                <h2>Login</h2>
-                
+            <div class="login-card">
+
+                {{-- Logo Agrovia dengan Animasi Floating & Neon Ring Pulse --}}
+                <div class="logo-wrapper" title="Agrovia Palm Oil & Agriculture">
+                    <div class="logo-glow-ring"></div>
+                    <img src="{{ asset('assets/img/logo-agrovia.png') }}" class="logo-img" alt="Logo Agrovia">
+                </div>
+
+                <h2 class="brand-title">AGROVIA</h2>
+                <p class="brand-tagline">PALM OIL &amp; AGRICULTURE</p>
+
+                <h3 class="welcome-title">Selamat datang</h3>
+                <p class="welcome-subtitle">Masuk untuk mengelola kebun &amp; produksi Anda</p>
+
+                {{-- Pesan Status / Error --}}
+                @if(session('status'))
+                <div class="alert-success">{{ session('status') }}</div>
+                @endif
+                @if(session('success'))
+                <div class="alert-success">{{ session('success') }}</div>
+                @endif
                 @if($errors->any())
-                    <div class="error-msg">{{ $errors->first() }}</div>
+                <div class="alert-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>{{ $errors->first() }}</span>
+                </div>
                 @endif
 
-                <form method="POST" action="/session">
+                {{-- Form Login --}}
+                <form method="POST" action="{{ url('/session') }}" id="loginForm" autocomplete="on">
                     @csrf
-                    <div class="input-group">
-                        <input type="text" name="username" placeholder="Username" value="{{ old('username') }}" required autofocus>
+
+                    <!-- Username atau Email -->
+                    <div class="field-group">
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="field-input"
+                            placeholder=" "
+                            value="{{ old('username') }}"
+                            required
+                            autofocus
+                            autocomplete="username">
+                        <label for="username" class="field-label">Username atau email</label>
                     </div>
-                    <div class="input-group">
-                        <input type="password" name="password" placeholder="Password" required>
+
+                    <!-- Kata Sandi -->
+                    <div class="field-group">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="field-input"
+                            placeholder=" "
+                            required
+                            autocomplete="current-password">
+                        <label for="password" class="field-label">Kata sandi</label>
                     </div>
-                    
-                    <div class="remember">
-                        <input type="checkbox" name="remember" id="remember">
-                        <label for="remember">Remember me</label>
+
+                    <!-- Ingat Saya & Lupa Sandi -->
+                    <div class="options-row">
+                        <label class="remember-label" for="remember">
+                            <input type="checkbox" name="remember" id="remember" class="remember-checkbox" checked>
+                            <span>Ingat saya</span>
+                        </label>
+                        <a href="{{ url('/login/forgot-password') }}" class="forgot-link">Lupa sandi?</a>
                     </div>
-                    
-                    <button type="submit" class="btn-login">Login</button>
+
+                    <!-- Tombol Masuk -->
+                    <button type="submit" class="btn-submit" id="btnSubmit">
+                        Masuk
+                    </button>
                 </form>
 
+                <!-- Link Registrasi Akun Baru -->
                 <div class="bottom-text">
-                    <a href="#">Forget Password?</a><br><br>
-                    <span>Or</span>
-                    <div class="social-login">
-                        <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google">
-                        <img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook">
-                    </div>
-                    
-                    <p style="margin-top: 20px; font-size: 0.9rem;">
-                        Belum punya akun? 
-                        <a href="{{ url('/register') }}" style="color: #a855f7; font-weight: 700;">Daftar di sini</a>
-                    </p>
+                    Belum punya akun? <a href="{{ url('/register') }}">Daftar di sini</a>
                 </div>
+
             </div>
         </div>
     </div>
 
+    {{-- Script Interaktif: Audio Web API & Toggle Tema --}}
+    <script>
+        (function() {
+            // 1. Audio Click Synthesis
+            let audioCtx = null;
+
+            function playClickSound() {
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (!audioCtx && AudioContextClass) audioCtx = new AudioContextClass();
+                    if (!audioCtx || audioCtx.state === 'suspended') {
+                        audioCtx.resume().catch(() => {});
+                        return;
+                    }
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(480, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(720, audioCtx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.06);
+                } catch (e) {}
+            }
+
+            const btn = document.getElementById('btnSubmit');
+            if (btn) btn.addEventListener('click', playClickSound);
+
+            // 2. Theme Toggle (Dark Mode / Light Mode)
+            const toggleBtn = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+
+            function applyTheme(isLight) {
+                if (isLight) {
+                    document.body.classList.add('light-theme');
+                    icon.textContent = '🌙';
+                    label.textContent = 'Mode Gelap';
+                    localStorage.setItem('agrovia_auth_theme', 'light');
+                } else {
+                    document.body.classList.remove('light-theme');
+                    icon.textContent = '☀️';
+                    label.textContent = 'Mode Terang';
+                    localStorage.setItem('agrovia_auth_theme', 'dark');
+                }
+            }
+
+            const saved = localStorage.getItem('agrovia_auth_theme');
+            if (saved === 'light') applyTheme(true);
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    playClickSound();
+                    const isNowLight = !document.body.classList.contains('light-theme');
+                    applyTheme(isNowLight);
+                });
+            }
+        })();
+    </script>
 </body>
+
 </html>
