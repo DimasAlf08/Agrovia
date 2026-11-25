@@ -32,7 +32,7 @@
     margin: 0 !important;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .main-content {
         margin-left: 285px !important;
         padding-left: 0.5rem !important;
@@ -41,18 +41,91 @@
     }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
     #sidenav-main {
-        transform: translateX(-300px);
-        transition: transform 0.3s ease !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        width: 275px !important;
+        max-width: 85vw !important;
+        border-radius: 0 24px 24px 0 !important;
+        margin: 0 !important;
+        transform: translateX(-110%) !important;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 99999 !important;
     }
-    .g-sidenav-pinned #sidenav-main {
+    #sidenav-main.show-mobile,
+    body.g-sidenav-pinned #sidenav-main {
         transform: translateX(0) !important;
+        box-shadow: 10px 0 50px rgba(0, 0, 0, 0.85) !important;
     }
     .main-content {
         margin-left: 0 !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* ── RESPONSIVE MOBILE TWEAKS ─────────────────────── */
+.main-content-inner {
+    width: 100%;
+}
+.main-content-inner > .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.75rem !important;
+}
+@media (min-width: 768px) {
+    .main-content-inner > .container-fluid {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        padding-top: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        border-radius: 14px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .agr-table-card {
+        border-radius: 16px !important;
+    }
+    .agr-table-toolbar {
+        padding: 0.75rem 1rem !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    .agr-toolbar-left, .agr-toolbar-right {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+    .agr-search-box {
+        width: 100% !important;
+    }
+    .agr-search-box input {
+        width: 100% !important;
+    }
+    .agr-table th, .agr-table td {
+        padding: 0.65rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        white-space: nowrap;
+    }
+    .fixed-plugin .fixed-plugin-button {
+        bottom: 18px !important;
+        right: 18px !important;
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .fixed-plugin .card {
+        width: 100% !important;
+        max-width: 320px !important;
     }
 }
 

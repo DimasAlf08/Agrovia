@@ -1,8 +1,8 @@
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3" id="sidenav-main">
 
   {{-- ── 1. HEADER SIDEBAR (LOGO RESMI AGROVIA) ── --}}
-  <div class="sidebar-header-box">
-    <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-decoration-none w-100">
+  <div class="sidebar-header-box d-flex align-items-center justify-content-between">
+    <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-decoration-none min-width-0 flex-grow-1">
       <div class="brand-logo-container">
         <img src="{{ asset('assets/img/logo-agrovia.png') }}" alt="Agrovia Logo" class="brand-logo-image">
       </div>
@@ -11,6 +11,12 @@
         <span class="brand-tagline">Palm Oil & Agriculture</span>
       </div>
     </a>
+    <button type="button" class="sidebar-close-btn d-xl-none" id="closeSidenavBtn" aria-label="Tutup Menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </div>
 
   <div class="sidebar-separator"></div>
@@ -480,4 +486,126 @@
   color: #ffffff !important;
   transform: scale(1.08);
 }
+
+/* ── RESPONSIVE MOBILE SIDEBAR ──────────── */
+.sidebar-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 0;
+}
+.sidebar-close-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: #ef4444;
+  color: #fff;
+}
+
+@media (max-width: 1199.98px) {
+  #sidenav-main {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 275px !important;
+    max-width: 82vw !important;
+    border-radius: 0 24px 24px 0 !important;
+    margin: 0 !important;
+    transform: translateX(-110%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 99999 !important;
+  }
+  #sidenav-main.show-mobile,
+  body.g-sidenav-pinned #sidenav-main {
+    transform: translateX(0) !important;
+    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.85) !important;
+  }
+  .sidenav-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 99990;
+  }
+  .sidenav-backdrop.show {
+    display: block;
+  }
+}
 </style>
+
+{{-- Backdrop for Mobile Sidebar --}}
+<div class="sidenav-backdrop" id="sidenavBackdrop"></div>
+
+<script>
+(function() {
+  function initMobileSidenav() {
+    const openBtn = document.getElementById('iconNavbarSidenav');
+    const closeBtn = document.getElementById('closeSidenavBtn');
+    const backdrop = document.getElementById('sidenavBackdrop');
+    const sidenav = document.getElementById('sidenav-main');
+
+    function openSidebar() {
+      if (sidenav) sidenav.classList.add('show-mobile');
+      if (backdrop) backdrop.classList.add('show');
+      document.body.classList.add('g-sidenav-pinned');
+    }
+
+    function closeSidebar() {
+      if (sidenav) sidenav.classList.remove('show-mobile');
+      if (backdrop) backdrop.classList.remove('show');
+      document.body.classList.remove('g-sidenav-pinned');
+    }
+
+    if (openBtn) {
+      openBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSidebar();
+      };
+    }
+    if (closeBtn) {
+      closeBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSidebar();
+      };
+    }
+    if (backdrop) {
+      backdrop.onclick = function(e) {
+        e.preventDefault();
+        closeSidebar();
+      };
+    }
+
+    if (sidenav) {
+      sidenav.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 1200) closeSidebar();
+        });
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileSidenav);
+  } else {
+    initMobileSidenav();
+  }
+})();
+</script>

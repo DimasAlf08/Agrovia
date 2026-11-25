@@ -227,7 +227,7 @@
             </div>
             <div class="ql-info">
               <span class="ql-title">Hasil Panen</span>
-              <span class="ql-desc">Catat & lihat produksi</span>
+              <span class="ql-desc">{{ auth()->user()->role === 'admin' ? 'Catat & lihat produksi' : 'Lihat catatan produksi' }}</span>
             </div>
             <i class="fas fa-chevron-right ql-arrow"></i>
           </a>
@@ -286,6 +286,7 @@
       </h6>
       <div class="feature-cards-grid">
 
+        @if(auth()->user()->role === 'admin')
         <a href="{{ route('panen.create') }}" class="feature-card fc-purple">
           <div class="fc-glow"></div>
           <div class="fc-icon">
@@ -299,7 +300,6 @@
           </div>
         </a>
 
-        @if(auth()->user()->role === 'admin')
         <a href="{{ route('lahan.create') }}" class="feature-card fc-cyan">
           <div class="fc-glow"></div>
           <div class="fc-icon">
@@ -345,6 +345,21 @@
           </div>
         </a>
         @else
+        <a href="{{ route('panen.index') }}" class="feature-card fc-purple">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 3a9 9 0 0 1 9 9M12 3a9 9 0 0 0-9 9"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="fc-content">
+            <h6>Hasil Panen</h6>
+            <p>Lihat catatan &amp; produksi TBS sawit</p>
+          </div>
+        </a>
+
         <a href="{{ route('laporan.index') }}" class="feature-card fc-cyan">
           <div class="fc-glow"></div>
           <div class="fc-icon">
@@ -440,6 +455,20 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
+@media (max-width: 576px) {
+  .dash-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+  .dash-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .dash-title {
+    font-size: 1.4rem !important;
+  }
+}
 .dash-greeting {
   font-size: 0.8rem;
   color: rgba(255,255,255,0.45) !important;
@@ -506,7 +535,37 @@
   gap: 1rem;
 }
 @media (max-width: 1200px) { .dash-stats-grid { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 576px)  { .dash-stats-grid { grid-template-columns: 1fr; } }
+@media (max-width: 576px)  { 
+  .dash-stats-grid { 
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.6rem !important;
+  }
+  .stat-card {
+    padding: 0.85rem !important;
+    border-radius: 16px !important;
+    gap: 0.4rem !important;
+  }
+  .stat-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.95rem !important;
+  }
+  .stat-value {
+    font-size: 1.45rem !important;
+  }
+  .stat-label {
+    font-size: 0.65rem !important;
+  }
+  .stat-unit {
+    font-size: 0.65rem !important;
+  }
+  .stat-trend {
+    font-size: 0.65rem !important;
+  }
+}
+@media (max-width: 360px) {
+  .dash-stats-grid { grid-template-columns: 1fr !important; }
+}
 
 .stat-card {
   position: relative;
@@ -644,7 +703,18 @@
 .chart-legend { display: flex; align-items: center; gap: 0.4rem; }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .legend-text { font-size: 0.72rem; color: rgba(255,255,255,0.4) !important; }
-.chart-container { padding: 1rem 1.3rem 1.3rem; }
+.chart-container { 
+  padding: 1rem 1.3rem 1.3rem; 
+  position: relative;
+  min-height: 260px;
+}
+@media (max-width: 576px) {
+  .chart-container {
+    padding: 0.75rem 0.6rem 0.85rem;
+    min-height: 220px;
+    height: 220px;
+  }
+}
 
 .badge-pill {
   font-size: 0.65rem;
@@ -741,7 +811,37 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 }
-@media (max-width: 576px) { .feature-cards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 576px) { 
+  .feature-cards-grid { 
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.6rem !important;
+  }
+  .feature-card {
+    padding: 0.85rem 0.75rem !important;
+    border-radius: 14px !important;
+    gap: 0.45rem !important;
+    min-height: auto !important;
+  }
+  .feature-card .fc-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .feature-card h6 {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.15rem !important;
+  }
+  .feature-card p {
+    font-size: 0.68rem !important;
+    line-height: 1.25 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+@media (max-width: 360px) {
+  .feature-cards-grid { grid-template-columns: 1fr !important; }
+}
 
 .feature-card {
   position: relative;

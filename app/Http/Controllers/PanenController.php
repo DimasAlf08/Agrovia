@@ -19,6 +19,7 @@ class PanenController extends Controller
     }
     public function create()
     {
+        $this->requireAdmin();
         return view('panen.form', [
             'panen' => new HasilPanen(),
             'lahanList' => Lahan::orderBy('nama_lahan')->get(),
@@ -27,6 +28,7 @@ class PanenController extends Controller
     }
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $request->validate([
             'tanggal' => 'required|date',
             'berat' => 'required|numeric|min:0',
