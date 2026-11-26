@@ -16,17 +16,20 @@ class SessionsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string', // Ubah dari email
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($request->only('username', 'password'))) {
+        $loginInput = $request->input('username');
+        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        if (Auth::attempt([$fieldType => $loginInput, 'password' => $request->password], $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah.',
+            'username' => 'Username/email atau password salah.',
         ])->onlyInput('username');
     }
 

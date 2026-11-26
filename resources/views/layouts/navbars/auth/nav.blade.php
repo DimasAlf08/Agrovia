@@ -31,18 +31,46 @@
             </nav>
         </div>
 
-        {{-- Right side: User chip & Logout --}}
+        {{-- Right side: Pesan Email, User chip & Logout --}}
         <div class="d-flex align-items-center gap-2 ms-auto flex-shrink-0">
-            {{-- User chip --}}
-            <div class="navbar-user-chip" title="Profil Pengguna">
-                <div class="navbar-avatar">
-                    @auth{{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 1)) }}@endauth
+            @php
+                $navUnreadPesan = 0;
+                try {
+                    if (auth()->check() && \Illuminate\Support\Facades\Schema::hasTable('pesan_emails')) {
+                        $navUnreadPesan = \App\Models\PesanEmail::where('penerima_id', auth()->id())
+                            ->whereNull('dibaca_pada')
+                            ->count();
+                    }
+                } catch (\Throwable $e) {
+                    $navUnreadPesan = 0;
+                }
+            @endphp
+            <a href="{{ route('pesan.index') }}" class="navbar-mail-btn position-relative" title="Pesan Email (Admin & Pengawas)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                @if($navUnreadPesan > 0)
+                    <span class="navbar-mail-badge">{{ $navUnreadPesan > 9 ? '9+' : $navUnreadPesan }}</span>
+                @endif
+            </a>
+
+            {{-- User chip (Link ke Pengaturan Profil) --}}
+            <a href="{{ route('profil.edit') }}" class="navbar-user-chip text-decoration-none" title="Pengaturan Profil">
+                <div class="navbar-avatar" style="overflow:hidden;">
+                    @auth
+                        @if(auth()->user()->foto_profil)
+                            <img src="{{ asset(auth()->user()->foto_profil) }}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        @else
+                            {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 1)) }}
+                        @endif
+                    @endauth
                 </div>
                 <div class="navbar-user-text d-none d-md-flex">
                     <span class="navbar-user-name">@auth{{ auth()->user()->nama ?? 'User' }}@endauth</span>
                     <span class="navbar-user-role">@auth{{ ucfirst(auth()->user()->role ?? '') }}@endauth</span>
                 </div>
-            </div>
+            </a>
 
             {{-- Logout Button --}}
             <a href="{{ url('/logout') }}" class="navbar-logout-btn" title="Keluar">
@@ -188,5 +216,46 @@
   box-shadow: 0 4px 12px rgba(239,68,68,0.35);
   color: #fff !important;
   transform: scale(1.05);
+}
+
+.navbar-mail-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(184, 68, 247, 0.12);
+  border: 1px solid rgba(184, 68, 247, 0.28);
+  color: var(--neon-purple-light) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navbar-mail-btn:hover {
+  background: var(--neon-glow-soft);
+  border-color: var(--neon-purple);
+  box-shadow: 0 4px 14px var(--neon-glow-soft);
+  color: #fff !important;
+  transform: scale(1.06);
+}
+
+.navbar-mail-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
 }
 </style>

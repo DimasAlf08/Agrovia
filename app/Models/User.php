@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'foto_profil',
         'password',
         'username', // Tambahan untuk Agrovia
         'nama',     // Tambahan untuk Agrovia

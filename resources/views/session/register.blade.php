@@ -560,6 +560,9 @@
                         <input type="text" name="username" placeholder="Username (misal: mandor123)" value="{{ old('username') }}" required autocomplete="username">
                     </div>
                     <div class="input-group">
+                        <input type="email" name="email" placeholder="Alamat Email (misal: nama@email.com)" value="{{ old('email') }}" required autocomplete="email">
+                    </div>
+                    <div class="input-group">
                         <input type="password" name="password" placeholder="Kata Sandi (min. 6 karakter)" required autocomplete="new-password">
                     </div>
                     <div class="input-group">

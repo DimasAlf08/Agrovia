@@ -151,19 +151,65 @@
         @endif
       </a>
 
+      {{-- SECTION KOMUNIKASI --}}
+      <div class="nav-section-title">
+        <span>KOMUNIKASI</span>
+      </div>
+
+      @php
+        $sidebarUnreadPesan = 0;
+        try {
+          if (auth()->check() && \Illuminate\Support\Facades\Schema::hasTable('pesan_emails')) {
+            $sidebarUnreadPesan = \App\Models\PesanEmail::where('penerima_id', auth()->id())
+              ->whereNull('dibaca_pada')
+              ->count();
+          }
+        } catch (\Throwable $e) {
+          $sidebarUnreadPesan = 0;
+        }
+      @endphp
+
+      {{-- MENU PESAN EMAIL (ADMIN & PENGAWAS) --}}
+      <a class="nav-button-block {{ request()->routeIs('pesan.*') ? 'active' : '' }}" href="{{ route('pesan.index') }}">
+        <div class="nav-icon-square icon-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+        </div>
+        <div class="nav-label-box">
+          <span class="nav-title d-flex align-items-center gap-2">
+            Pesan Email
+            @if($sidebarUnreadPesan > 0)
+              <span class="badge rounded-pill bg-danger" style="font-size: 0.62rem; padding: 0.2em 0.5em;">{{ $sidebarUnreadPesan }}</span>
+            @endif
+          </span>
+          <span class="nav-caption">Admin & Pengawas</span>
+        </div>
+        @if(request()->routeIs('pesan.*'))
+        <div class="nav-active-pill"></div>
+        @endif
+      </a>
+
     </nav>
   </div>
 
   {{-- ── 3. USER PROFILE PANEL (BAGIAN PALING BAWAH) ── --}}
   <div class="sidebar-user-bottom">
     <div class="sidebar-user-inner">
-      <div class="user-badge-avatar">
-        {{ strtoupper(substr(auth()->user()->nama ?? 'A', 0, 1)) }}
-      </div>
-      <div class="user-info-text">
-        <span class="user-name-text">{{ auth()->user()->nama ?? 'Admin Kebun' }}</span>
-        <span class="user-role-text">{{ strtoupper(auth()->user()->role ?? 'ADMIN') }}</span>
-      </div>
+      <a href="{{ route('profil.edit') }}" class="d-flex align-items-center gap-2 text-decoration-none min-width-0 flex-grow-1" title="Pengaturan Profil">
+        <div class="user-badge-avatar" style="overflow:hidden;">
+          @if(auth()->user()->foto_profil)
+            <img src="{{ asset(auth()->user()->foto_profil) }}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+          @else
+            {{ strtoupper(substr(auth()->user()->nama ?? 'A', 0, 1)) }}
+          @endif
+        </div>
+        <div class="user-info-text">
+          <span class="user-name-text">{{ auth()->user()->nama ?? 'Admin Kebun' }}</span>
+          <span class="user-role-text">{{ strtoupper(auth()->user()->role ?? 'ADMIN') }}</span>
+        </div>
+      </a>
       <a href="{{ route('logout') }}" class="user-logout-btn" title="Logout">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>

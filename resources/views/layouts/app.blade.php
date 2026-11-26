@@ -292,11 +292,112 @@
     })();
   </script>
 
+  <style>
+    /* ── ANIMASI TRANSISI PER HALAMAN & EFEK KLIK AGROVIA ── */
+    #agr-page-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      z-index: 99999;
+      background: linear-gradient(90deg, var(--neon-purple, #b844f7), #22c55e, #06b6d4);
+      box-shadow: 0 0 12px var(--neon-glow, rgba(184, 68, 247, 0.7));
+      opacity: 0;
+      pointer-events: none;
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    }
+    #agr-page-progress.active {
+      opacity: 1;
+      width: 82%;
+    }
+
+    @keyframes agrPageEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.992);
+      }
+      100% {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes agrCardPop {
+      0% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .main-content-inner {
+      animation: agrPageEnter 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .main-content-inner.agr-page-leaving {
+      opacity: 0 !important;
+      transform: translateY(-8px) scale(0.992) !important;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .main-content-inner .dash-header,
+    .main-content-inner .agr-table-card,
+    .main-content-inner .card {
+      animation: agrCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .main-content-inner .stat-card:nth-child(1) { animation: agrCardPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both; }
+    .main-content-inner .stat-card:nth-child(2) { animation: agrCardPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.09s both; }
+    .main-content-inner .stat-card:nth-child(3) { animation: agrCardPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both; }
+    .main-content-inner .stat-card:nth-child(4) { animation: agrCardPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.19s both; }
+
+    /* Efek tekan & ripple saat menu / tombol dipencet */
+    .nav-button-block,
+    .agr-mail-tab,
+    .btn-agrovia-add,
+    .btn-dash-primary,
+    .navbar-mail-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-button-block:active,
+    .agr-mail-tab:active,
+    .btn-agrovia-add:active,
+    .btn-dash-primary:active {
+      transform: scale(0.97) !important;
+    }
+
+    .agr-click-ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, var(--neon-glow-soft, rgba(184, 68, 247, 0.35)) 60%, transparent 100%);
+      animation: agrRippleAnim 0.55s ease-out forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes agrRippleAnim {
+      to {
+        transform: scale(3.2);
+        opacity: 0;
+      }
+    }
+  </style>
+
   @stack('css')
 </head>
 
 
 <body class="g-sidenav-show bg-gray-100 {{ (\Request::is('rtl') ? 'rtl' : (Request::is('virtual-reality') ? 'virtual-reality' : '')) }} ">
+  <div id="agr-page-progress"></div>
   {{-- Video Background Animasi --}}
   <div class="video-bg-container">
     <video autoplay muted loop playsinline class="video-bg-media">
@@ -655,12 +756,73 @@
           return;
         }
 
-        // B. Suara klik reguler
+        // B. Suara klik reguler + Efek Ripple & Transisi Halaman
         const target = e.target.closest('a, button, input[type="submit"], input[type="button"], .nav-button-block, .stat-card, .quick-link-item, .agr-btn-edit, .agr-btn-delete, .theme-color-btn, .btn-dim, .btn');
         if (target && window.AgroviaSound) {
           window.AgroviaSound.click();
         }
+
+        // B1. Efek Ripple Neon pada tombol/menu yang dipencet
+        const rippleHost = e.target.closest('.nav-button-block, .agr-mail-tab, .btn-agrovia-add, .btn-dash-primary, .navbar-mail-btn');
+        if (rippleHost) {
+          const rect = rippleHost.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const ripple = document.createElement('span');
+          ripple.className = 'agr-click-ripple';
+          ripple.style.width = size + 'px';
+          ripple.style.height = size + 'px';
+          ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+          ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+          rippleHost.appendChild(ripple);
+          setTimeout(function() { ripple.remove(); }, 600);
+        }
+
+        // B2. Animasi keluar halus saat pindah halaman (per halaman)
+        const navLink = e.target.closest('a[href]');
+        if (
+          navLink &&
+          !e.defaultPrevented &&
+          !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey &&
+          e.button === 0 &&
+          !navLink.hasAttribute('download') &&
+          !navLink.hasAttribute('data-bs-toggle') &&
+          !navLink.classList.contains('agr-btn-edit') &&
+          !navLink.classList.contains('user-logout-btn') &&
+          !navLink.classList.contains('navbar-logout-btn')
+        ) {
+          const href = navLink.getAttribute('href');
+          const targetAttr = navLink.getAttribute('target');
+          if (
+            href &&
+            href !== '#' &&
+            !href.startsWith('#') &&
+            !href.startsWith('javascript:') &&
+            targetAttr !== '_blank' &&
+            navLink.origin === window.location.origin
+          ) {
+            e.preventDefault();
+            const contentInner = document.querySelector('.main-content-inner');
+            const progressBar = document.getElementById('agr-page-progress');
+            if (progressBar) progressBar.classList.add('active');
+            if (contentInner) {
+              contentInner.classList.add('agr-page-leaving');
+              setTimeout(function() {
+                window.location.href = href;
+              }, 190);
+            } else {
+              window.location.href = href;
+            }
+          }
+        }
       }, true);
+
+      // Reset animasi jika user menekan tombol Back/Forward browser (bfcache)
+      window.addEventListener('pageshow', function() {
+        const contentInner = document.querySelector('.main-content-inner');
+        const progressBar = document.getElementById('agr-page-progress');
+        if (contentInner) contentInner.classList.remove('agr-page-leaving');
+        if (progressBar) progressBar.classList.remove('active');
+      });
 
       // 3. POPUP SUKSES & GAGAL DARI SESSION LARAVEL (CRUD)
       const successMessage = @json(session('success'));

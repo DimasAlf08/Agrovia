@@ -17,6 +17,7 @@ use App\Http\Controllers\PekerjaController;
 use App\Http\Controllers\PanenController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PesanEmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,14 +45,20 @@ Route::group(['middleware' => 'auth'], function () {
     // --- INI YANG TADI HILANG ---
     Route::get('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
 
+    // 3b. Rute Pesan Email (Admin & Pengawas)
+    Route::get('/pesan', [PesanEmailController::class, 'index'])->name('pesan.index');
+    Route::post('/pesan', [PesanEmailController::class, 'store'])->name('pesan.store');
+    Route::get('/pesan/{pesan}', [PesanEmailController::class, 'show'])->name('pesan.show');
+    Route::delete('/pesan/{pesan}', [PesanEmailController::class, 'destroy'])->name('pesan.destroy');
+
     // 4. Rute Profil & Logout (Bawaan Template)
     Route::get('profile', function () {
         return view('profile');
     })->name('profile');
 
     Route::match(['get', 'post'], '/logout', [SessionsController::class, 'destroy'])->name('logout');
-    Route::get('/user-profile', [InfoUserController::class, 'create']);
-    Route::post('/user-profile', [InfoUserController::class, 'store']);
+    Route::get('/user-profile', [InfoUserController::class, 'create'])->name('profil.edit');
+    Route::post('/user-profile', [InfoUserController::class, 'store'])->name('profil.update');
 });
 
 
